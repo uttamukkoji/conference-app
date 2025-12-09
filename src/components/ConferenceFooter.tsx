@@ -50,21 +50,11 @@ const defaultColumns: FooterColumn[] = [
   },
   {
     title: 'Quick Links',
-    links: [
-      { href: '/speakers', label: 'Speakers' },
-      { href: '#newsletter', label: 'Newsletter', isExternal: true },
-      { href: '#terms', label: 'Terms & Conditions', isExternal: true },
-      { href: '#privacy', label: 'Privacy Policy', isExternal: true },
-    ],
+    links: [{ href: '/speakers', label: 'Speakers' }],
   },
   {
     title: 'Contact',
     links: [
-      {
-        href: 'tel:+31622227889',
-        label: '📞 +31(0)622227889',
-        isExternal: true,
-      },
       {
         href: 'mailto:info@conference.com',
         label: '✉️ info@conference.com',

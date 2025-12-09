@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ConferenceFooter, ConferenceHeader, SpeakerCard } from '../components';
-import { getSpeakersRes } from '../helper';
+import { getConferenceRes, getSpeakersRes } from '../helper';
 import '../styles/conference.css';
 import {
   Conference,
@@ -9,19 +9,15 @@ import {
   Sponsor,
 } from '../typescript/conference-types';
 
-const conferenceData: Conference = {
+// Fallback conference data
+const fallbackConferenceData: Conference = {
   title: 'Conference 2026',
   timezone: 'US',
-  description:
-    '<div class="stylizedpageheader section" style="box-sizing: border-box; transition: all 0.5s ease 0s; margin-bottom: 0px; color: rgb(245, 239, 239); font-family: proxima_novalight; background-color: rgb(255, 255, 255);"><div class="stylized-header section-custom" style="box-sizing: border-box; transition: all 0.5s ease 0s; margin-top: 25px; margin-bottom: 0px; width: 1280px; display: inline-block;"><div class="container-fluid " style="box-sizing: border-box; transition: all 0.5s ease 0s; margin-right: auto; margin-bottom: 0px; margin-left: auto; max-width: 100%; padding-right: 25px !important; padding-left: 25px !important;"><div class="row" style="box-sizing: border-box; transition: all 0.5s ease 0s; margin-bottom: 0px;"><div class="col-md-12" style="box-sizing: border-box; transition: all 0.5s ease 0s; margin-bottom: 0px; padding-right: 0px; padding-left: 0px; width: 1230px;"><h1 style="box-sizing: border-box; transition: all 0.5s ease 0s; margin-bottom: 0px; font-size: 25px; font-family: proxima_novaregular; font-weight: 500; line-height: 1.1; color: rgb(242, 234, 234);">Learn More About Conference 2018</h1><p style="box-sizing: border-box; transition: all 0.5s ease 0s; margin-top: 10px; margin-bottom: 0px; font-family: proxima_novaregular; color: rgb(86, 86, 86); font-size: 18px; line-height: normal; text-align: justify;">Conference 2018 US brings you five days of innovation to accelerate your journey to a software-defined business—from mobile devices to the data center and the cloud.&nbsp; Explore Conference&nbsp;2018.</p></div></div></div></div></div>\n<div class="paragraphText parbase section" style="box-sizing: border-box; transition: all 0.5s ease 0s; margin-bottom: 0px; font-size: 0px; color: rgb(51, 51, 51); font-family: proxima_novalight; background-color: rgb(255, 255, 255); text-align: justify;"><div class="section-custom " style="box-sizing: border-box; transition: all 0.5s ease 0s; margin-top: 25px; margin-bottom: 25px; width: 1280px; display: inline-block; text-align: justify;"><div class="container-fluid" style="box-sizing: border-box; transition: all 0.5s ease 0s; margin-right: auto; margin-bottom: 0px; margin-left: auto; max-width: 100%; padding-right: 25px !important; padding-left: 25px !important; text-align: justify;"><div class="row" style="box-sizing: border-box; transition: all 0.5s ease 0s; margin-bottom: 0px; text-align: justify;"><div class="col-md-12" style="box-sizing: border-box; transition: all 0.5s ease 0s; margin-bottom: 0px; padding-right: 0px; padding-left: 0px; width: 1230px; text-align: justify;"><p style="box-sizing: border-box; transition: all 0.5s ease 0s; margin-bottom: 0px; font-family: proxima_novaregular; color: rgb(86, 86, 86); font-size: 18px; line-height: normal; text-align: justify;">Technology-driven innovation&nbsp;is disrupting every market and industry. And it\'s being created by people like you. You unlock value from today\'s technologies while anticipating a rapidly approaching technological future. That\'s why we created an event with you and your peers in mind. At Conference&nbsp;2018,&nbsp;&nbsp;premier digital infrastructure event, you can find what you need to launch the digital transformation that relies on you.</p><p style="box-sizing: border-box; transition: all 0.5s ease 0s; margin-bottom: 0px; font-family: proxima_novaregular; color: rgb(86, 86, 86); font-size: 18px; line-height: normal; text-align: justify;">No matter what path you\'re on, you\'ll discover the technology, learn the trends, and meet the people that are shaping the future of digital business and taking IT to the next level. Welcome to a world where it all begins with you. Welcome to Conference&nbsp;2018.</p></div></div></div></div></div>',
+  description: '',
   conferecne_images: [
     {
       url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&q=80',
       filename: 'conference-main.jpg',
-    },
-    {
-      url: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=1920&q=80',
-      filename: 'conference-stage.jpg',
     },
   ],
   conference_links: [
@@ -29,8 +25,8 @@ const conferenceData: Conference = {
     { href: '#sponsors', title: 'Become a Sponsor' },
   ],
   conference_event: {
-    end_time: '2018-08-30T14:30:00.000Z',
-    start_time: '2018-08-26T01:30:00.000Z',
+    end_time: '2026-08-30T14:30:00.000Z',
+    start_time: '2026-08-26T01:30:00.000Z',
   },
 };
 
@@ -368,6 +364,9 @@ const formatEventDate = (startTime: string, endTime: string) => {
 };
 
 const ConferencePage: React.FC = () => {
+  const [conferenceData, setConferenceData] = useState<Conference>(
+    fallbackConferenceData
+  );
   const [speakers, setSpeakers] = useState<Speaker[]>(
     fallbackSpeakers.slice(0, 9)
   );
@@ -377,8 +376,32 @@ const ConferencePage: React.FC = () => {
     conferenceData.conference_event.end_time
   );
 
-  // Fetch speakers from SDK (limit 9)
+  // Fetch all data from SDK
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch conference data
+        const conferenceRes = await getConferenceRes();
+        if (conferenceRes) {
+          setConferenceData({
+            title: conferenceRes.title || fallbackConferenceData.title,
+            timezone: conferenceRes.timezone || fallbackConferenceData.timezone,
+            description: conferenceRes.description || '',
+            conferecne_images:
+              conferenceRes.conferecne_images ||
+              fallbackConferenceData.conferecne_images,
+            conference_links:
+              conferenceRes.conference_links ||
+              fallbackConferenceData.conference_links,
+            conference_event:
+              conferenceRes.conference_event ||
+              fallbackConferenceData.conference_event,
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch speakers:', error);
+      }
+    };
     const fetchSpeakers = async () => {
       try {
         const speakersData = await getSpeakersRes();
@@ -401,7 +424,7 @@ const ConferencePage: React.FC = () => {
         console.error('Failed to fetch speakers:', error);
       }
     };
-
+    fetchData();
     fetchSpeakers();
   }, []);
 

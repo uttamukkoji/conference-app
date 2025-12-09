@@ -210,3 +210,19 @@ export const getSessionsBySpeakerUidRes = async (
 
   return filteredSessions;
 };
+
+// Fetch conference data
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const getConferenceRes = async (): Promise<any> => {
+  const response = (await getEntry({
+    contentTypeUid: 'conference',
+    referenceFieldPath: undefined,
+    jsonRtePath: ['description'],
+  })) as any[][];
+
+  if (response?.[0]?.[0]) {
+    liveEdit && addEditableTags(response[0][0], 'conference', true);
+    return response[0][0];
+  }
+  return null;
+};

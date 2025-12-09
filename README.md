@@ -137,6 +137,45 @@ The application uses the following Contentstack content types:
 | Title      | `title`   | Single Line | Yes      | Room name       |
 | URL        | `url`     | Single Line | No       | Room identifier |
 
+### 5. Conference (`conference`)
+
+Main conference information for the landing page.
+
+| Field Name        | Field UID           | Data Type   | Required | Description                               |
+| ----------------- | ------------------- | ----------- | -------- | ----------------------------------------- |
+| Title             | `title`             | Single Line | Yes      | Conference name (e.g., "Conference 2026") |
+| Timezone          | `timezone`          | Single Line | No       | Timezone (e.g., "US")                     |
+| Description       | `description`       | Rich Text   | No       | Conference description (HTML)             |
+| Conference Images | `conferecne_images` | File        | No       | Multiple images for hero section          |
+| Conference Links  | `conference_links`  | Group       | No       | Array of links (href, title)              |
+| Conference Event  | `conference_event`  | Group       | Yes      | Contains `start_time` and `end_time`      |
+
+### 6. Sponsor (`sponsor`)
+
+Sponsor/partner information.
+
+| Field Name    | Field UID       | Data Type   | Required | Description                      |
+| ------------- | --------------- | ----------- | -------- | -------------------------------- |
+| Title         | `title`         | Single Line | Yes      | Sponsor name                     |
+| Area Focus    | `area_focus`    | Single Line | No       | Category (e.g., "CMS", "Jobs")   |
+| Bio           | `bio`           | Multi Line  | No       | Sponsor description              |
+| Booth Number  | `booth_number`  | Number      | No       | Booth number at venue            |
+| Display Image | `display_image` | File        | No       | Sponsor banner image             |
+| Logo          | `logo`          | File        | No       | Sponsor logo                     |
+| Link          | `link`          | Group       | No       | Website link (href, title)       |
+| Participation | `participation` | Single Line | No       | Level (e.g., "Gold", "Platinum") |
+| Sort Order    | `sort_order`    | Number      | No       | Display order                    |
+
+### 7. Feature (`feature`)
+
+Conference highlights/features.
+
+| Field Name  | Field UID     | Data Type   | Required | Description                |
+| ----------- | ------------- | ----------- | -------- | -------------------------- |
+| Title       | `title`       | Single Line | Yes      | Feature title              |
+| Icon        | `icon`        | Single Line | No       | Emoji or icon (e.g., "⚔️") |
+| Description | `description` | Multi Line  | No       | Feature description        |
+
 ---
 
 ## Importing Content Using CLI
